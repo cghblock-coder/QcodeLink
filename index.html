@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code 生成器</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔗 QR Code 生成器</h1>
+            <p>輸入文字或網址，立即生成 QR Code</p>
+        </header>
+
+        <main>
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="text-input">輸入內容：</label>
+                    <textarea 
+                        id="text-input" 
+                        placeholder="輸入文字、網址或任何想要轉換成 QR Code 的內容..."
+                        rows="4"
+                    ></textarea>
+                </div>
+
+                <div class="options-group">
+                    <div class="option">
+                        <label for="size-select">尺寸：</label>
+                        <select id="size-select">
+                            <option value="200">小 (200x200)</option>
+                            <option value="300" selected>中 (300x300)</option>
+                            <option value="400">大 (400x400)</option>
+                            <option value="500">特大 (500x500)</option>
+                        </select>
+                    </div>
+
+                    <div class="option">
+                        <label for="color-input">顏色：</label>
+                        <input type="color" id="color-input" value="#000000">
+                    </div>
+
+                    <div class="option">
+                        <label for="bg-color-input">背景色：</label>
+                        <input type="color" id="bg-color-input" value="#ffffff">
+                    </div>
+                </div>
+
+                <button id="generate-btn" class="generate-btn">
+                    生成 QR Code
+                </button>
+            </div>
+
+            <div class="output-section">
+                <div id="qr-container" class="qr-container">
+                    <div class="placeholder">
+                        <p>📱 QR Code 將顯示在這裡</p>
+                    </div>
+                </div>
+
+                <div id="download-section" class="download-section" style="display: none;">
+                    <button id="download-btn" class="download-btn">
+                        📥 下載 QR Code
+                    </button>
+                    <p class="download-info">點擊下載 PNG 格式圖片</p>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>使用 QRCode.js 庫製作 | © 2024</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
