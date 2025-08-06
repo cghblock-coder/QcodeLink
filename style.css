@@ -174,27 +174,83 @@ input[type="color"] {
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
+/* 網址顯示區域 */
+.url-display {
+    margin: 20px 0;
+    padding: 20px;
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+}
+
+.url-info h3 {
+    margin: 0 0 15px 0;
+    color: #495057;
+    font-size: 1.1rem;
+}
+
+.url-text {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    word-break: break-all;
+    font-family: 'Courier New', monospace;
+    font-size: 0.95rem;
+    color: #0066cc;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.copy-btn {
+    padding: 8px 16px;
+    background: #6f42c1;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.copy-btn:hover {
+    background: #5a2d91;
+}
+
 /* 下載區域 */
 .download-section {
     border-top: 1px solid #e0e0e0;
     padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.download-btn {
+.download-btn, .download-combo-btn {
     padding: 12px 30px;
-    background: #28a745;
     color: white;
     border: none;
     border-radius: 8px;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    margin-bottom: 10px;
     transition: background-color 0.3s;
+}
+
+.download-btn {
+    background: #28a745;
 }
 
 .download-btn:hover {
     background: #218838;
+}
+
+.download-combo-btn {
+    background: #fd7e14;
+}
+
+.download-combo-btn:hover {
+    background: #e8590c;
 }
 
 .download-info {

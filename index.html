@@ -11,28 +11,28 @@
     <div class="container">
         <header>
             <h1>🔗 QR Code 生成器</h1>
-            <p>輸入文字或網址，立即生成 QR Code</p>
+            <p>專為您的網址 <strong>https://accounts.google.com/</strong> 量身打造</p>
         </header>
 
         <main>
             <div class="input-section">
                 <div class="input-group">
-                    <label for="text-input">輸入內容：</label>
+                    <label for="url-input">🌐 網址：</label>
                     <textarea 
-                        id="text-input" 
-                        placeholder="輸入文字、網址或任何想要轉換成 QR Code 的內容..."
-                        rows="4"
-                    ></textarea>
+                        id="url-input" 
+                        placeholder="輸入完整網址..."
+                        rows="3"
+                    >https://accounts.google.com/</textarea>
                 </div>
 
                 <div class="options-group">
                     <div class="option">
                         <label for="size-select">尺寸：</label>
                         <select id="size-select">
-                            <option value="200">小 (200x200)</option>
-                            <option value="300" selected>中 (300x300)</option>
-                            <option value="400">大 (400x400)</option>
-                            <option value="500">特大 (500x500)</option>
+                            <option value="200">小 (200px)</option>
+                            <option value="300" selected>中 (300px)</option>
+                            <option value="400">大 (400px)</option>
+                            <option value="500">特大 (500px)</option>
                         </select>
                     </div>
 
@@ -42,13 +42,13 @@
                     </div>
 
                     <div class="option">
-                        <label for="bg-color-input">背景色：</label>
+                        <label for="bg-color-input">背景：</label>
                         <input type="color" id="bg-color-input" value="#ffffff">
                     </div>
                 </div>
 
                 <button id="generate-btn" class="generate-btn">
-                    生成 QR Code
+                    🚀 生成 QR Code
                 </button>
             </div>
 
@@ -59,20 +59,197 @@
                     </div>
                 </div>
 
+                <div id="url-display" class="url-display" style="display: none;">
+                    <h3>🔗 網址內容</h3>
+                    <div id="url-text" class="url-text"></div>
+                    <button id="copy-url-btn" class="copy-btn">📋 複製網址</button>
+                    <button id="open-url-btn" class="open-btn">🌐 開啟網址</button>
+                </div>
+
                 <div id="download-section" class="download-section" style="display: none;">
-                    <button id="download-btn" class="download-btn">
-                        📥 下載 QR Code
-                    </button>
-                    <p class="download-info">點擊下載 PNG 格式圖片</p>
+                    <button id="download-btn" class="download-btn">📥 下載 QR Code</button>
+                    <button id="download-combo-btn" class="download-combo-btn">📦 下載組合圖片</button>
                 </div>
             </div>
         </main>
-
-        <footer>
-            <p>使用 QRCode.js 庫製作 | © 2024</p>
-        </footer>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        class QRCodeGenerator {
+            constructor() {
+                this.canvas = null;
+                this.currentUrl = '';
+                this.init();
+            }
+
+            init() {
+                this.bindElements();
+                this.bindEvents();
+                this.autoGenerate();
+            }
+
+            bindElements() {
+                this.urlInput = document.getElementById('url-input');
+                this.sizeSelect = document.getElementById('size-select');
+                this.colorInput = document.getElementById('color-input');
+                this.bgColorInput = document.getElementById('bg-color-input');
+                this.generateBtn = document.getElementById('generate-btn');
+                this.qrContainer = document.getElementById('qr-container');
+                this.urlDisplay = document.getElementById('url-display');
+                this.urlText = document.getElementById('url-text');
+                this.copyUrlBtn = document.getElementById('copy-url-btn');
+                this.openUrlBtn = document.getElementById('open-url-btn');
+                this.downloadSection = document.getElementById('download-section');
+                this.downloadBtn = document.getElementById('download-btn');
+                this.downloadComboBtn = document.getElementById('download-combo-btn');
+            }
+
+            bindEvents() {
+                this.generateBtn.addEventListener('click', () => this.generateQRCode());
+                this.copyUrlBtn.addEventListener('click', () => this.copyUrl());
+                this.openUrlBtn.addEventListener('click', () => this.openUrl());
+                this.downloadBtn.addEventListener('click', () => this.downloadQRCode());
+                this.downloadComboBtn.addEventListener('click', () => this.downloadComboImage());
+                
+                this.urlInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && e.ctrlKey) {
+                        this.generateQRCode();
+                    }
+                });
+            }
+
+            autoGenerate() {
+                setTimeout(() => {
+                    if (this.urlInput.value.trim()) {
+                        this.generateQRCode();
+                    }
+                }, 1000);
+            }
+
+            async generateQRCode() {
+                const url = this.urlInput.value.trim();
+                
+                if (!url) {
+                    alert('請輸入網址');
+                    return;
+                }
+
+                try {
+                    this.showLoading();
+                    this.clearContainer();
+
+                    this.canvas = document.createElement('canvas');
+                    const size = parseInt(this.sizeSelect.value);
+
+                    await QRCode.toCanvas(this.canvas, url, {
+                        width: size,
+                        height: size,
+                        color: {
+                            dark: this.colorInput.value,
+                            light: this.bgColorInput.value
+                        },
+                        errorCorrectionLevel: 'M',
+                        margin: 2
+                    });
+
+                    this.qrContainer.appendChild(this.canvas);
+                    this.displayUrl(url);
+                    this.currentUrl = url;
+                    
+                    this.hideLoading();
+                    console.log('QR Code 生成成功！');
+
+                } catch (error) {
+                    this.hideLoading();
+                    alert('生成失敗：' + error.message);
+                }
+            }
+
+            displayUrl(url) {
+                this.urlText.innerHTML = `<a href="${url}" target="_blank">${url}</a>`;
+                this.urlDisplay.style.display = 'block';
+                this.downloadSection.style.display = 'block';
+            }
+
+            async copyUrl() {
+                try {
+                    await navigator.clipboard.writeText(this.currentUrl);
+                    alert('網址已複製！');
+                } catch (error) {
+                    alert('複製失敗');
+                }
+            }
+
+            openUrl() {
+                if (this.currentUrl) {
+                    window.open(this.currentUrl, '_blank');
+                }
+            }
+
+            downloadQRCode() {
+                if (!this.canvas) return;
+                
+                const link = document.createElement('a');
+                link.download = `qrcode_${Date.now()}.png`;
+                link.href = this.canvas.toDataURL();
+                link.click();
+            }
+
+            downloadComboImage() {
+                if (!this.canvas) return;
+
+                const combo = document.createElement('canvas');
+                const ctx = combo.getContext('2d');
+                
+                const qrSize = this.canvas.width;
+                const padding = 30;
+                const textHeight = 60;
+                
+                combo.width = qrSize + padding * 2;
+                combo.height = qrSize + textHeight + padding * 3;
+                
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, combo.width, combo.height);
+                
+                ctx.drawImage(this.canvas, padding, padding);
+                
+                ctx.fillStyle = 'black';
+                ctx.font = '14px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(this.currentUrl, combo.width / 2, qrSize + padding + 30);
+                
+                const link = document.createElement('a');
+                link.download = `qrcode_combo_${Date.now()}.png`;
+                link.href = combo.toDataURL();
+                link.click();
+            }
+
+            clearContainer() {
+                this.qrContainer.innerHTML = '';
+                this.urlDisplay.style.display = 'none';
+                this.downloadSection.style.display = 'none';
+            }
+
+            showLoading() {
+                this.generateBtn.disabled = true;
+                this.generateBtn.textContent = '生成中...';
+            }
+
+            hideLoading() {
+                this.generateBtn.disabled = false;
+                this.generateBtn.textContent = '🚀 生成 QR Code';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof QRCode !== 'undefined') {
+                new QRCodeGenerator();
+            } else {
+                setTimeout(() => {
+                    new QRCodeGenerator();
+                }, 1000);
+            }
+        });
+    </script>
 </body>
 </html>
